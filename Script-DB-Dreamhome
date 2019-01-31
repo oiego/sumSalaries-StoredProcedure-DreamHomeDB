@@ -1,0 +1,221 @@
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 27-02-2015 a las 03:40:58
+-- Versión del servidor: 5.1.57
+-- Versión de PHP: 5.5.14
+
+CREATE database dreamh; 
+use dreamh;
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Base de datos: `dreamhome`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `branch`
+--
+
+CREATE TABLE IF NOT EXISTS `branch` (
+  `BranchNo` varchar(5) NOT NULL,
+  `Street` varchar(20) DEFAULT NULL,
+  `City` varchar(12) DEFAULT NULL,
+  `Postcode` varchar(12) DEFAULT NULL,
+  PRIMARY KEY (`BranchNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `branch`
+--
+
+INSERT INTO `branch` (`BranchNo`, `Street`, `City`, `Postcode`) VALUES
+('B002', '56 Clover Dr', 'London', 'NW10 6EU'),
+('B003', '163 Main St', 'Glasgow', 'G11 9QX'),
+('B004', '32 Manse Rd', 'Bristol', 'BS99 1NZ'),
+('B005', '22 Deer Rd', 'London', 'SW1 4EH'),
+('B007', '16 Argyll St', 'Aberdeen', 'AB2 3SU');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `client`
+--
+
+CREATE TABLE IF NOT EXISTS `client` (
+  `ClientNo` varchar(5) NOT NULL,
+  `Fname` varchar(20) DEFAULT NULL,
+  `Lname` varchar(20) DEFAULT NULL,
+  `TelNo` varchar(16) DEFAULT NULL,
+  `PrefType` varchar(12) DEFAULT NULL,
+  `MaxRent` float DEFAULT NULL,
+  PRIMARY KEY (`ClientNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `client`
+--
+
+INSERT INTO `client` (`ClientNo`, `Fname`, `Lname`, `TelNo`, `PrefType`, `MaxRent`) VALUES
+('CR56', 'Aline', 'Stewart', '0141-848-1825', 'Flat', 350),
+('CR62', 'Mary', 'Tregear', '01224-196720', 'Flat', 600),
+('CR74', 'Mike', 'Ritchie', '01475-392178', 'House', 750),
+('CR76', 'John', 'Kay', '0207-774-5632', 'Flat', 425);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `privateowner`
+--
+
+CREATE TABLE IF NOT EXISTS `privateowner` (
+  `OwnerNo` varchar(5) NOT NULL,
+  `Fname` varchar(20) DEFAULT NULL,
+  `Lname` varchar(20) DEFAULT NULL,
+  `Address` varchar(50) DEFAULT NULL,
+  `TelNo` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`OwnerNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `privateowner`
+--
+
+INSERT INTO `privateowner` (`OwnerNo`, `Fname`, `Lname`, `Address`, `TelNo`) VALUES
+('CO40', 'Sam', 'Spade', '63 Well St, Glasgow', '0141-943-1728'),
+('CO46', 'Joe', 'Keogh', '2 Fergus Dr, Aberdeen', '01224-861212'),
+('CO87', 'Coral', 'Farrel', '6 Achray St, Glasgow', '0141-357-7419'),
+('CO93', 'Tony', 'Shaw', '12 Park Pl, Glasgow', '0141-225-7025');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `propertyforrent`
+--
+
+CREATE TABLE IF NOT EXISTS `propertyforrent` (
+  `PropertyNo` varchar(5) NOT NULL,
+  `OwnerNo` varchar(5) NOT NULL,
+  `BranchNo` varchar(5) NOT NULL,
+  `StaffNo` varchar(5) DEFAULT NULL,
+  `Street` varchar(50) DEFAULT NULL,
+  `City` varchar(20) DEFAULT NULL,
+  `Postcode` varchar(16) DEFAULT NULL,
+  `Type` varchar(12) DEFAULT NULL,
+  `Rooms` int(11) DEFAULT NULL,
+  `Rent` int(11) DEFAULT NULL,
+  PRIMARY KEY (`PropertyNo`,`OwnerNo`,`BranchNo`),
+  KEY `fk_propertyforrent_privateowner1_idx` (`OwnerNo`),
+  KEY `fk_propertyforrent_staff1_idx` (`StaffNo`),
+  KEY `fk_propertyforrent_branch1_idx` (`BranchNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `propertyforrent`
+--
+
+INSERT INTO `propertyforrent` (`PropertyNo`, `OwnerNo`, `BranchNo`, `StaffNo`, `Street`, `City`, `Postcode`, `Type`, `Rooms`, `Rent`) VALUES
+('PA14', 'CO46', 'B007', 'SA9', '16 Holhead', 'Aberdeen', 'AB7 5SU', 'House', 6, 650),
+('PG16', 'CO93', 'B003', 'SG14', '5 Novar Dr', 'Glasgow', 'G12 9AX', 'Flat', 4, 450),
+('PG21', 'CO87', 'B003', 'SG37', '18 Dale Rd', 'Glasgow', 'G12', 'House', 5, 600),
+('PG36', 'CO93', 'B003', 'SG37', '2 Manor Rd', 'Glasgow', 'G32 4QX', 'Flat', 3, 375),
+('PG4', 'CO40', 'B003', NULL, '6 Lawrence St', 'Glasgow', 'G11 9QX', 'Flat', 3, 350),
+('PL94', 'CO87', 'B005', 'SL41', '6 Argyll St', 'London', 'NW2', 'Flat', 4, 400);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `registration`
+--
+
+CREATE TABLE IF NOT EXISTS `registration` (
+  `DateJoined` datetime NOT NULL,
+  `StaffNo` varchar(5) NOT NULL,
+  `ClientNo` varchar(5) NOT NULL,
+  `BranchNo` varchar(5) NOT NULL,
+  PRIMARY KEY (`DateJoined`,`StaffNo`,`ClientNo`,`BranchNo`),
+  KEY `fk_registration_client1_idx` (`ClientNo`),
+  KEY `fk_registration_branch1_idx` (`BranchNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `registration`
+--
+
+INSERT INTO `registration` (`DateJoined`, `StaffNo`, `ClientNo`, `BranchNo`) VALUES
+('2002-11-16 00:00:00', 'SG37', 'CR74', 'B003'),
+('2003-03-07 00:00:00', 'SA9', 'CR62', 'B007'),
+('2003-04-11 00:00:00', 'SG37', 'CR56', 'B003'),
+('2004-01-02 00:00:00', 'SL41', 'CR76', 'B005');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `staff`
+--
+
+CREATE TABLE IF NOT EXISTS `staff` (
+  `StaffNo` varchar(5) NOT NULL,
+  `BranchNo` varchar(5) NOT NULL,
+  `Fname` varchar(12) DEFAULT NULL,
+  `Lname` varchar(20) DEFAULT NULL,
+  `Position` varchar(20) DEFAULT NULL,
+  `Sex` char(1) DEFAULT NULL,
+  `DOB` datetime DEFAULT NULL,
+  `Salary` int(11) DEFAULT NULL,
+  PRIMARY KEY (`StaffNo`,`BranchNo`),
+  KEY `fk_staff_branch1_idx` (`BranchNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `staff`
+--
+
+INSERT INTO `staff` (`StaffNo`, `BranchNo`, `Fname`, `Lname`, `Position`, `Sex`, `DOB`, `Salary`) VALUES
+('SA9', 'B007', 'Mary', 'Howe', 'Assistant', 'F', '1970-02-19 00:00:00', 9000),
+('SG14', 'B003', 'David', 'Ford', 'Supervisor', 'M', '1958-03-24 00:00:00', 18000),
+('SG37', 'B003', 'Ann', 'Beech', 'Assistant', 'F', '1960-10-11 00:00:00', 12000),
+('SG5', 'B003', 'Susan', 'Brand', 'Manager', 'F', '1940-06-03 00:00:00', 24000),
+('SL21', 'B005', 'John', 'White', 'Manager', 'M', '1945-10-01 00:00:00', 30000),
+('SL41', 'B005', 'Julie', 'Lee', 'Assistant', 'F', '1965-06-13 00:00:00', 90000);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `viewing`
+--
+
+CREATE TABLE IF NOT EXISTS `viewing` (
+  `ViewDate` datetime NOT NULL,
+  `ClientNo` varchar(5) NOT NULL,
+  `PropertyNo` varchar(5) NOT NULL,
+  `Comment` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ViewDate`,`ClientNo`,`PropertyNo`),
+  KEY `fk_viewing_propertyforrent1_idx` (`PropertyNo`),
+  KEY `fk_viewing_client1_idx` (`ClientNo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `viewing`
+--
+
+INSERT INTO `viewing` (`ViewDate`, `ClientNo`, `PropertyNo`, `Comment`) VALUES
+('2004-05-24 00:00:00', 'CR56', 'PA14', 'too small'),
+('2004-04-28 00:00:00', 'CR56', 'PG36', NULL),
+('2004-05-26 00:00:00', 'CR56', 'PG4', NULL),
+('2004-05-14 00:00:00', 'CR62', 'PA14', 'no dining room'),
+('2004-04-20 00:00:00', 'CR76', 'PG4', 'too remote');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
