@@ -1,0 +1,31 @@
+-- This procedure increases the salary using CURSOR in MySQL depending on the previous salary of the employee
+drop procedure if exists increaseSalary;
+
+delimiter //
+create procedure increaseSalary()
+begin
+	declare oldSalary int(11);
+    declare id varchar(5);
+    declare encontrado integer default 0;
+    declare c1 cursor for select staffNo from staff;
+    declare continue handler for not found set encontrado = 1;
+    open c1;
+    fetch c1 into id;
+    while encontrado = 0 do
+		set oldSalary = (select salary from staff where staffNo = id); 
+        if oldSalary > 20000 then
+			set oldSalary = oldSalary*1.1;
+		elseif oldSalary between 10000 and 20000 then
+			set oldSalary = oldSalary*1.15;
+		else 
+			set oldSalary = 10000;
+		end if;
+        update staff set salary = oldSalary where staffNo = id;
+		fetch c1 into id;
+	end while;
+    close c1;
+end //
+delimiter ;
+	
+call increaseSalary();
+select*from staff
