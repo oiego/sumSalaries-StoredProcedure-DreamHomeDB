@@ -1,3 +1,4 @@
+-- MYSQL
 -- This procedure increases the salary using CURSOR in MySQL depending on the previous salary of the employee
 drop procedure if exists increaseSalary;
 
