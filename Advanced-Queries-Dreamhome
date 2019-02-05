@@ -1,0 +1,46 @@
+
+
+-- 1. Nombre de todos los gerentes que ganan más de 25,000.
+SELECT * FROM staff s
+WHERE s.position LIKE 'Manager' AND salary > 25000;
+
+-- 2. Empleados que manejan propiedades para renta en Glasgow.
+SELECT * FROM staff s
+Inner JOIN PropertyForRent p
+ON s.staffNo = p.staffNo 
+WHERE p.city = 'Glasgow' ;
+
+-- 3. Empleados que no manejan propiedades.
+-- Se agregó is not null para que no comparara nulos
+SELECT * FROM staff 
+WHERE staffNo 
+NOT IN (SELECT staffNo from propertyForRent WHERE staffNo IS NOT NULL);
+
+-- 4. Clientes que han visto propiedades para renta en Glasgow.
+SELECT c.clientNo, c.fName, c.lName FROM `client` c 
+INNER JOIN viewing v 
+ON c.clientNo = v.clientNo
+INNER JOIN propertyForRent p
+ON v.propertyNo = p.propertyNo
+WHERE p.city = 'Glasgow';
+
+-- 5. Ciudades donde hay una sucursal o propiedades para renta.
+SELECT distinct city 
+FROM propertyForRent
+UNION
+SELECT DISTINCT city 
+FROM branch;
+
+-- 6. Ciudades donde hay sucursales pero no propiedades para renta.
+SELECT DISTINCT city 
+FROM branch 
+WHERE city NOT IN
+(SELECT distinct city 
+FROM propertyForRent);
+
+-- 7. Ciudades donde hay una sucursal y propiedades para renta.
+SELECT DISTINCT city 
+FROM branch 
+WHERE city IN
+(SELECT distinct city 
+FROM propertyForRent);
